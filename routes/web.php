@@ -24,6 +24,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // CRUD karyawan – login wajib, kontrol aksi di controller (role-based)
 Route::middleware(['auth'])->group(function () {
     Route::resource('/karyawan', KaryawanController::class);
+    Route::get('/karyawan/{id}/foto', [KaryawanController::class, 'foto'])->name('karyawan.foto');
     // Halaman struktur manager-staff bisa dilihat semua user yang login
     Route::get('/management-level', [KaryawanController::class, 'managementLevel'])->name('management.level');
 
@@ -46,6 +47,12 @@ Route::middleware(['auth'])->group(function () {
     // User Management – hanya superadmin
     Route::middleware('role:superadmin')->group(function () {
         Route::resource('/users', UserController::class);
+
+        Route::get('/karyawan-requests', [KaryawanController::class, 'requestsIndex'])->name('karyawan.requests.index');
+        Route::get('/karyawan-requests/{id}', [KaryawanController::class, 'requestShow'])->name('karyawan.requests.show');
+        Route::get('/karyawan/{id}/request/foto', [KaryawanController::class, 'requestFoto'])->name('karyawan.request.foto');
+        Route::post('/karyawan/{id}/request/approve', [KaryawanController::class, 'approveRequest'])->name('karyawan.requests.approve');
+        Route::post('/karyawan/{id}/request/reject', [KaryawanController::class, 'rejectRequest'])->name('karyawan.requests.reject');
 
         Route::get('/cuti/manage', [CutiController::class, 'manage'])->name('cuti.manage');
         Route::patch('/cuti/{cuti}/status', [CutiController::class, 'updateStatus'])->name('cuti.update-status');

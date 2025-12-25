@@ -10,8 +10,18 @@ class Karyawan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama', 'email', 'jabatan', 'gender', 'tanggal_lahir', 'telepon', 'alamat', 'foto', 'unit_kerja', 'manager_id',
+        'user_id', 'nama', 'email', 'jabatan', 'gender', 'tanggal_lahir', 'telepon', 'alamat', 'foto', 'unit_kerja', 'manager_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function request()
+    {
+        return $this->hasOne(KaryawanRequest::class);
+    }
 
     public function manager()
     {

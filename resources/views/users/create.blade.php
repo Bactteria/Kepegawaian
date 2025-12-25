@@ -59,6 +59,44 @@
                 @enderror
             </div>
 
+            <div class="mb-3">
+                <label>Jabatan (untuk Karyawan)</label>
+                <select name="jabatan" class="form-control @error('jabatan') is-invalid @enderror">
+                    <option value="">-- Pilih Jabatan --</option>
+                    <option value="Manager" {{ old('jabatan') == 'Manager' ? 'selected' : '' }}>Manager</option>
+                    <option value="Staff" {{ old('jabatan') == 'Staff' ? 'selected' : '' }}>Staff</option>
+                </select>
+                @error('jabatan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label>Unit Kerja (untuk Karyawan)</label>
+                <select name="unit_kerja" class="form-control @error('unit_kerja') is-invalid @enderror">
+                    <option value="">-- Pilih Unit Kerja --</option>
+                    <option value="Sistem dan Harmonisasi Akreditasi" {{ old('unit_kerja') == 'Sistem dan Harmonisasi Akreditasi' ? 'selected' : '' }}>Sistem dan Harmonisasi Akreditasi</option>
+                    <option value="Pusat Data dan Informasi" {{ old('unit_kerja') == 'Pusat Data dan Informasi' ? 'selected' : '' }}>Pusat Data dan Informasi</option>
+                    <option value="Penguatan Penerapan Standar dan Penilaian Kesesuaian" {{ old('unit_kerja') == 'Penguatan Penerapan Standar dan Penilaian Kesesuaian' ? 'selected' : '' }}>Penguatan Penerapan Standar dan Penilaian Kesesuaian</option>
+                    <option value="Akreditasi Lembaga Inspeksi dan Lembaga Sertifikasi" {{ old('unit_kerja') == 'Akreditasi Lembaga Inspeksi dan Lembaga Sertifikasi' ? 'selected' : '' }}>Akreditasi Lembaga Inspeksi dan Lembaga Sertifikasi</option>
+                </select>
+                @error('unit_kerja')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label>Gender (untuk Karyawan)</label>
+                <select name="gender" class="form-control @error('gender') is-invalid @enderror">
+                    <option value="">-- Pilih Gender --</option>
+                    <option value="Laki-laki" {{ old('gender') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="Perempuan" {{ old('gender') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                </select>
+                @error('gender')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
             <button type="submit" class="btn btn-success">
                 <i class="fas fa-save"></i> Simpan
             </button>

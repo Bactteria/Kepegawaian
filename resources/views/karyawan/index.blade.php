@@ -329,12 +329,9 @@
         <i class="fas fa-info-circle"></i>
         <div>
             <strong>Data Belum Lengkap</strong>
-            <p class="mb-0 mt-1">Anda belum mengisi data karyawan. Silakan lengkapi profil Anda terlebih dahulu.</p>
+            <p class="mb-0 mt-1">Data default karyawan Anda belum dibuat oleh superadmin. Silakan tunggu.</p>
         </div>
     </div>
-    <a href="{{ route('karyawan.create') }}" class="btn btn-primary btn-action">
-        <i class="fas fa-plus"></i> Isi Data Karyawan
-    </a>
 @else
     @if($isSuperadmin)
         {{-- Superadmin View: Daftar Karyawan --}}
@@ -375,7 +372,7 @@
                                     </td>
                                     <td>
                                         @if($k->foto)
-                                            <img src="{{ Storage::url($k->foto) }}" width="50" height="50" class="img-thumbnail">
+                                            <img src="{{ route('karyawan.foto', $k->id) }}" width="50" height="50" class="img-thumbnail">
                                         @else
                                             <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                                                 <i class="fas fa-user text-muted"></i>
@@ -450,12 +447,32 @@
         </div>
     @else
         {{-- View untuk karyawan (hanya data sendiri) --}}
+        @if($karyawan && $karyawan->request)
+            @if($karyawan->request->status === 'pending')
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <div class="ms-2">
+                        <strong>Pengajuan sedang diproses</strong>
+                        <p class="mb-0 mt-1" style="font-size: 13px;">Kelengkapan data yang Anda ajukan sedang menunggu persetujuan superadmin.</p>
+                    </div>
+                </div>
+            @elseif($karyawan->request->status === 'rejected')
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div class="ms-2">
+                        <strong>Pengajuan ditolak</strong>
+                        <p class="mb-0 mt-1" style="font-size: 13px;">{{ $karyawan->request->rejected_reason ?? 'Pengajuan Anda ditolak oleh superadmin.' }}</p>
+                    </div>
+                </div>
+            @endif
+        @endif
+
         <div class="alert alert-info">
             <i class="fas fa-info-circle"></i>
             <div class="ms-2">
                 <strong>Panduan pengisian data karyawan</strong>
                 <p class="mb-0 mt-1" style="font-size: 13px;">
-                    Data <strong>Nama, Gender, Telepon, Alamat, dan Foto</strong> dapat diubah sendiri oleh karyawan (termasuk Manager).
+                    Data <strong>Telepon, Alamat, Tanggal Lahir, dan Foto</strong> dapat diajukan sendiri oleh karyawan (termasuk Manager).
                     Data <strong>Jabatan, Unit Kerja, Email resmi, dan atasan (Manager)</strong dikelola oleh <strong>HRD / Superadmin</strong>.
                 </p>
             </div>
@@ -465,7 +482,7 @@
             <div class="profile-header">
                 <div class="profile-info">
                     <img class="profile-avatar" 
-                         src="{{ $karyawan && $karyawan->foto ? Storage::url($karyawan->foto) : 'https://ui-avatars.com/api/?name='.urlencode($karyawan->nama ?? auth()->user()->name).'&background=667eea&color=fff&size=128' }}" 
+                         src="{{ $karyawan && $karyawan->foto ? route('karyawan.foto', $karyawan->id) : 'https://ui-avatars.com/api/?name='.urlencode($karyawan->nama ?? auth()->user()->name).'&background=667eea&color=fff&size=128' }}" 
                          alt="Foto Profil">
                     <div>
                         <div class="profile-name">{{ $karyawan->nama ?? auth()->user()->name }}</div>

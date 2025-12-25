@@ -44,14 +44,32 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'role' => 'required|in:superadmin,karyawan',
+            'jabatan' => 'required_if:role,karyawan',
+            'unit_kerja' => 'required_if:role,karyawan',
+            'gender' => 'required_if:role,karyawan',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
+
+        if ($user->role === 'karyawan') {
+            Karyawan::create([
+                'user_id' => $user->id,
+                'nama' => $request->name,
+                'email' => $request->email,
+                'jabatan' => $request->jabatan,
+                'unit_kerja' => $request->unit_kerja,
+                'gender' => $request->gender,
+                'telepon' => null,
+                'alamat' => null,
+                'tanggal_lahir' => null,
+                'foto' => null,
+            ]);
+        }
 
         return redirect()->route('users.index')
             ->with('success', 'User berhasil ditambahkan');
@@ -131,12 +149,12 @@ class UserController extends Controller
 
         // Jika user yang dihapus adalah karyawan, hapus juga data karyawan terkait
         if ($user->role === 'karyawan') {
-            $karyawan = Karyawan::where('email', $user->email)->first();
+            $karyawan = $user->karyawan;
             
             if ($karyawan) {
                 // Hapus foto dari storage jika ada
-                if ($karyawan->foto && Storage::disk('public')->exists($karyawan->foto)) {
-                    Storage::disk('public')->delete($karyawan->foto);
+                if ($karyawan->foto && Storage::disk('local')->exists($karyawan->foto)) {
+                    Storage::disk('local')->delete($karyawan->foto);
                 }
                 
                 // Hapus data karyawan
